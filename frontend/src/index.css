@@ -1,26 +1,43 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Caveat:wght@400;600;700&family=Space+Grotesk:wght@300;400;500;600;700&display=swap');
 
 :root {
-  /* Colors */
-  --color-bg-primary: #0a0a0f;
-  --color-bg-secondary: #13131a;
-  --color-bg-tertiary: #1a1a24;
+  /* Creative Studio Color Palette — warm, inky, energetic */
+  --color-bg-primary: #1a1410;
+  /* deep warm ink black */
+  --color-bg-secondary: #231c16;
+  /* slightly lighter parchment-dark */
+  --color-bg-tertiary: #2e241c;
+  /* card background */
+  --color-bg-sketch: #f5f0e8;
+  /* sketch paper for accents */
 
-  --color-text-primary: #ffffff;
-  --color-text-secondary: #b4b4c8;
-  --color-text-muted: #7a7a8c;
+  --color-text-primary: #f0e8d8;
+  /* warm cream */
+  --color-text-secondary: #c4a97a;
+  /* warm tan */
+  --color-text-muted: #7a6248;
+  /* muted warm brown */
+  --color-text-ink: #1a1410;
+  /* dark ink for light backgrounds */
 
-  --color-accent-primary: #6366f1;
-  --color-accent-secondary: #8b5cf6;
-  --color-accent-tertiary: #ec4899;
+  /* Studio accent palette */
+  --color-accent-primary: #f5a623;
+  /* vivid amber/yellow — marker highlight */
+  --color-accent-secondary: #e83b2f;
+  /* energetic red — concept art pop */
+  --color-accent-tertiary: #4ecdc4;
+  /* teal — complementary cool */
+  --color-accent-ink: #2c1a0e;
+  /* dark ink outline */
 
-  --color-success: #10b981;
-  --color-warning: #f59e0b;
+  --color-success: #7bc67e;
+  --color-warning: #f5a623;
 
   /* Gradients */
-  --gradient-primary: linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #ec4899 100%);
-  --gradient-secondary: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
-  --gradient-accent: linear-gradient(135deg, #f59e0b 0%, #ec4899 100%);
+  --gradient-primary: linear-gradient(135deg, #f5a623 0%, #e83b2f 60%, #c0392b 100%);
+  --gradient-secondary: linear-gradient(135deg, #f5a623 0%, #f7c948 100%);
+  --gradient-accent: linear-gradient(135deg, #4ecdc4 0%, #44b399 100%);
+  --gradient-paper: linear-gradient(145deg, #f5f0e8 0%, #ede5d5 100%);
 
   /* Spacing */
   --spacing-xs: 0.5rem;
@@ -32,7 +49,8 @@
   --spacing-3xl: 6rem;
 
   /* Typography */
-  --font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  --font-family: 'Space Grotesk', system-ui, -apple-system, sans-serif;
+  --font-sketch: 'Caveat', cursive;
   --font-size-xs: 0.75rem;
   --font-size-sm: 0.875rem;
   --font-size-base: 1rem;
@@ -45,7 +63,7 @@
   --font-size-6xl: 4rem;
 
   /* Border Radius */
-  --radius-sm: 0.375rem;
+  --radius-sm: 0.25rem;
   --radius-md: 0.5rem;
   --radius-lg: 0.75rem;
   --radius-xl: 1rem;
@@ -53,11 +71,12 @@
   --radius-full: 9999px;
 
   /* Shadows */
-  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
-  --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
-  --shadow-glow: 0 0 30px rgba(99, 102, 241, 0.3);
+  --shadow-sm: 3px 3px 0 rgba(26, 20, 16, 0.5);
+  --shadow-md: 5px 5px 0 rgba(26, 20, 16, 0.6);
+  --shadow-lg: 8px 8px 0 rgba(26, 20, 16, 0.7);
+  --shadow-xl: 12px 12px 0 rgba(26, 20, 16, 0.8);
+  --shadow-glow: 0 0 30px rgba(245, 166, 35, 0.35);
+  --shadow-red-glow: 0 0 30px rgba(232, 59, 47, 0.3);
 
   /* Transitions */
   --transition-fast: 150ms ease;
@@ -86,11 +105,13 @@ body {
   min-height: 100vh;
 }
 
-/* Animations */
+/* ============================================================
+   ANIMATIONS
+   ============================================================ */
 @keyframes fadeIn {
   from {
     opacity: 0;
-    transform: translateY(20px);
+    transform: translateY(24px);
   }
 
   to {
@@ -99,22 +120,10 @@ body {
   }
 }
 
-@keyframes slideInLeft {
+@keyframes fadeInLeft {
   from {
     opacity: 0;
     transform: translateX(-30px);
-  }
-
-  to {
-    opacity: 1;
-    transform: translateX(0);
-  }
-}
-
-@keyframes slideInRight {
-  from {
-    opacity: 0;
-    transform: translateX(30px);
   }
 
   to {
@@ -127,27 +136,67 @@ body {
 
   0%,
   100% {
-    transform: translateY(0px);
+    transform: translateY(0px) rotate(-1deg);
   }
 
   50% {
-    transform: translateY(-20px);
+    transform: translateY(-14px) rotate(1deg);
   }
 }
 
-@keyframes pulse {
+@keyframes floatRight {
 
   0%,
   100% {
-    opacity: 1;
+    transform: translateY(0px) rotate(2deg);
   }
 
   50% {
-    opacity: 0.5;
+    transform: translateY(-10px) rotate(-1deg);
   }
 }
 
-@keyframes gradient-shift {
+@keyframes sketchDraw {
+  from {
+    stroke-dashoffset: 1000;
+    opacity: 0;
+  }
+
+  to {
+    stroke-dashoffset: 0;
+    opacity: 1;
+  }
+}
+
+@keyframes markerPop {
+  0% {
+    transform: scale(0.85) rotate(-3deg);
+    opacity: 0;
+  }
+
+  60% {
+    transform: scale(1.06) rotate(1deg);
+  }
+
+  100% {
+    transform: scale(1) rotate(0deg);
+    opacity: 1;
+  }
+}
+
+@keyframes pencilWiggle {
+
+  0%,
+  100% {
+    transform: rotate(-8deg);
+  }
+
+  50% {
+    transform: rotate(8deg);
+  }
+}
+
+@keyframes gradientShift {
   0% {
     background-position: 0% 50%;
   }
@@ -161,19 +210,38 @@ body {
   }
 }
 
-/* Utility Classes */
+@keyframes lineGrow {
+  from {
+    transform: scaleX(0);
+  }
+
+  to {
+    transform: scaleX(1);
+  }
+}
+
+@keyframes storyboardReveal {
+  from {
+    opacity: 0;
+    transform: translateY(16px) scale(0.97);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* Utilities */
 .gradient-text {
   background: var(--gradient-primary);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
   background-size: 200% 200%;
-  animation: gradient-shift 3s ease infinite;
+  animation: gradientShift 4s ease infinite;
 }
 
-.glass {
-  background: rgba(255, 255, 255, 0.05);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+.sketch-text {
+  font-family: var(--font-sketch);
 }

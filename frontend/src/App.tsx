@@ -4,11 +4,47 @@ function App() {
   return (
     <div className="app">
 
-      {/* Navigation */}
+      {/* Sketch background */}
+      <div className="sketch-bg" aria-hidden="true">
+        <svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%">
+          <defs>
+            <pattern id="sketchGrid" width="80" height="80" patternUnits="userSpaceOnUse">
+              <path d="M 80 0 L 0 0 0 80" fill="none" stroke="#f5a623" strokeWidth="0.6" />
+            </pattern>
+            <pattern id="smallDot" width="20" height="20" patternUnits="userSpaceOnUse">
+              <circle cx="10" cy="10" r="1" fill="#f5a623" opacity="0.5" />
+            </pattern>
+          </defs>
+          <rect width="100%" height="100%" fill="url(#sketchGrid)" />
+          <rect width="100%" height="100%" fill="url(#smallDot)" />
+
+          <line x1="0" y1="33%" x2="100%" y2="33%" stroke="#f5a623" strokeWidth="0.4" strokeDasharray="8,16" opacity="0.4" />
+          <line x1="0" y1="66%" x2="100%" y2="66%" stroke="#f5a623" strokeWidth="0.4" strokeDasharray="8,16" opacity="0.4" />
+          <line x1="25%" y1="0" x2="25%" y2="100%" stroke="#f5a623" strokeWidth="0.4" strokeDasharray="8,16" opacity="0.25" />
+          <line x1="75%" y1="0" x2="75%" y2="100%" stroke="#f5a623" strokeWidth="0.4" strokeDasharray="8,16" opacity="0.25" />
+
+          <g opacity="0.35" stroke="#f5a623" strokeWidth="1.5" fill="none">
+            <path d="M40,40 L40,30 L30,30" />
+            <path d="M160,40 L160,30 L170,30" />
+            <path d="M40,120 L40,130 L30,130" />
+            <path d="M160,120 L160,130 L170,130" />
+          </g>
+
+          <g opacity="0.04" transform="translate(85%, 15%) rotate(-20)">
+            <rect x="0" y="0" width="24" height="110" rx="4" fill="none" stroke="#f5a623" strokeWidth="2" />
+            <ellipse cx="12" cy="10" rx="6" ry="6" fill="none" stroke="#f5a623" strokeWidth="1.5" />
+            <line x1="12" y1="110" x2="12" y2="130" stroke="#f5a623" strokeWidth="1.5" />
+            <line x1="10" y1="128" x2="12" y2="134" stroke="#f5a623" strokeWidth="1.5" />
+            <line x1="14" y1="128" x2="12" y2="134" stroke="#f5a623" strokeWidth="1.5" />
+          </g>
+        </svg>
+      </div>
+
+      {/* Navbar */}
       <nav className="navbar">
         <div className="navbar-inner">
           <div className="nav-logo">
-            <span className="logo-icon">⟡</span>
+            <span className="logo-icon">✏️</span>
             <span className="logo-text">Career<span className="gradient-text">Bridge</span></span>
           </div>
           <div className="nav-links">
@@ -18,19 +54,17 @@ function App() {
           </div>
           <div className="nav-actions">
             <button className="btn btn-ghost">Log In</button>
-            <button className="btn btn-primary btn-sm">Get Started</button>
+            <button className="btn btn-primary btn-sm">Get Started →</button>
           </div>
         </div>
       </nav>
 
-      {/* Hero Section */}
+      {/* Hero */}
       <section className="hero">
-        {/* Animated background blobs */}
-        <div className="blob blob-1"></div>
-        <div className="blob blob-2"></div>
-        <div className="blob blob-3"></div>
-
-        {/* Grid overlay */}
+        <div className="studio-corner studio-corner--tl" aria-hidden="true"></div>
+        <div className="studio-corner studio-corner--tr" aria-hidden="true"></div>
+        <div className="studio-corner studio-corner--bl" aria-hidden="true"></div>
+        <div className="studio-corner studio-corner--br" aria-hidden="true"></div>
         <div className="hero-grid-overlay"></div>
 
         <div className="hero-content">
@@ -80,7 +114,7 @@ function App() {
           </div>
         </div>
 
-        {/* Floating Card */}
+        {/* Floating cards */}
         <div className="hero-floating-card card-1">
           <div className="floating-card-icon">🎉</div>
           <div>
@@ -95,9 +129,16 @@ function App() {
             <div className="floating-card-sub">Tomorrow at 2:00 PM</div>
           </div>
         </div>
+
+        {/* Film strip ticks */}
+        <div className="panel-ticker" aria-hidden="true">
+          {[0, 1, 2, 3, 4, 5, 6].map(i => (
+            <div key={i} className={`panel-tick${i === 3 ? ' panel-tick--active' : ''}`}></div>
+          ))}
+        </div>
       </section>
 
-      {/* Logos / Trust Strip */}
+      {/* Trust strip */}
       <section className="trust-strip">
         <div className="trust-inner">
           <p className="trust-label">Trusted by teams at</p>
@@ -109,7 +150,7 @@ function App() {
         </div>
       </section>
 
-      {/* Features Section */}
+      {/* Features */}
       <section className="features" id="features">
         <div className="features-container">
           <div className="section-tag">Why CareerBridge</div>
@@ -187,7 +228,7 @@ function App() {
         </div>
       </section>
 
-      {/* How it Works */}
+      {/* How it works */}
       <section className="how-it-works" id="how-it-works">
         <div className="how-container">
           <div className="section-tag">How it Works</div>
@@ -199,16 +240,10 @@ function App() {
               <h3 className="step-title">Build Your Profile</h3>
               <p className="step-desc">Import your LinkedIn or fill in your skills, experience, and dream role in minutes.</p>
             </div>
-            <div className="step-connector">
-              <svg width="40" height="12" viewBox="0 0 40 12" fill="none"><path d="M0 6h38M32 1l6 5-6 5" stroke="rgba(99,102,241,0.5)" strokeWidth="2" strokeLinecap="round" /></svg>
-            </div>
             <div className="step-card">
               <div className="step-number">02</div>
               <h3 className="step-title">Get Matched</h3>
               <p className="step-desc">Our AI surfaces the top jobs tailored to you daily. Browse or let opportunities come to you.</p>
-            </div>
-            <div className="step-connector">
-              <svg width="40" height="12" viewBox="0 0 40 12" fill="none"><path d="M0 6h38M32 1l6 5-6 5" stroke="rgba(99,102,241,0.5)" strokeWidth="2" strokeLinecap="round" /></svg>
             </div>
             <div className="step-card">
               <div className="step-number">03</div>
@@ -223,7 +258,7 @@ function App() {
       <section className="testimonials" id="testimonials">
         <div className="testimonials-container">
           <div className="section-tag">Success Stories</div>
-          <h2 className="testimonials-title">Loved by candidates & <span className="gradient-text">recruiters alike</span></h2>
+          <h2 className="testimonials-title">Loved by candidates &amp; <span className="gradient-text">recruiters alike</span></h2>
 
           <div className="testimonials-grid">
             <div className="testimonial-card">
@@ -265,10 +300,8 @@ function App() {
         </div>
       </section>
 
-      {/* CTA Section */}
+      {/* CTA */}
       <section className="cta">
-        <div className="cta-blob cta-blob-1"></div>
-        <div className="cta-blob cta-blob-2"></div>
         <div className="cta-container">
           <div className="cta-inner">
             <div className="section-tag">Get Started Today</div>
@@ -297,8 +330,8 @@ function App() {
       {/* Footer */}
       <footer className="footer">
         <div className="footer-inner">
-          <div className="footer-brand">
-            <span className="logo-icon">⟡</span>
+          <div className="nav-logo" style={{ marginBottom: '0.25rem' }}>
+            <span className="logo-icon">✏️</span>
             <span className="logo-text">Career<span className="gradient-text">Bridge</span></span>
           </div>
           <p className="footer-tagline">Connecting talent with opportunity.</p>
