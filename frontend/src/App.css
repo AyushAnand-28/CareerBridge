@@ -200,18 +200,15 @@
   padding: 7rem 2rem 5rem;
   text-align: center;
   overflow: hidden;
+  background-image: linear-gradient(rgba(26, 20, 16, 0.85), rgba(26, 20, 16, 0.95)), url('./assets/eric-prouzet-B3UFXwcVbc4-unsplash.jpg');
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
 }
 
 
 .hero::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background:
-    radial-gradient(ellipse 65% 50% at 50% 40%, rgba(245, 166, 35, 0.1) 0%, transparent 65%),
-    radial-gradient(ellipse 40% 40% at 75% 65%, rgba(232, 59, 47, 0.07) 0%, transparent 60%),
-    radial-gradient(ellipse 35% 30% at 20% 70%, rgba(78, 205, 196, 0.06) 0%, transparent 55%);
-  pointer-events: none;
+  display: none;
 }
 
 /* Grid overlay */
@@ -224,10 +221,7 @@
   inset: 0;
   pointer-events: none;
   z-index: 0;
-  background-image:
-    linear-gradient(rgba(245, 166, 35, 0.04) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(245, 166, 35, 0.04) 1px, transparent 1px);
-  background-size: 48px 48px;
+  background: none;
 }
 
 
@@ -421,7 +415,7 @@
   top: 0;
   bottom: 0;
   width: 4px;
-  background: var(--gradient-primary);
+  background: var(--color-accent-primary);
 }
 
 .trust-inner {
@@ -493,14 +487,7 @@
 }
 
 .features::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  right: 0;
-  width: 300px;
-  height: 300px;
-  background: radial-gradient(circle, rgba(232, 59, 47, 0.06) 0%, transparent 70%);
-  pointer-events: none;
+  display: none;
 }
 
 .features-container {
@@ -561,7 +548,7 @@
 }
 
 .feature-card:hover::before {
-  background: var(--gradient-primary);
+  background: var(--color-accent-primary);
 }
 
 .feature-card--large {
@@ -625,7 +612,10 @@
 /* How it works */
 .how-it-works {
   padding: 6rem 2rem;
-  background: var(--color-bg-secondary);
+  background: linear-gradient(rgba(26, 20, 16, 0.9), rgba(26, 20, 16, 0.95)), url('./assets/marten-bjork-6dW3xyQvcYE-unsplash.jpg');
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
   text-align: left;
   position: relative;
   overflow: hidden;
@@ -846,7 +836,10 @@
 /* CTA */
 .cta {
   padding: 6rem 2rem;
-  background: var(--color-bg-secondary);
+  background: linear-gradient(rgba(26, 20, 16, 0.85), rgba(26, 20, 16, 0.95)), url('./assets/hunters-race-MYbhN8KaaEc-unsplash.jpg');
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
   text-align: left;
   position: relative;
   overflow: hidden;
@@ -860,7 +853,7 @@
   left: 0;
   right: 0;
   height: 4px;
-  background: var(--gradient-primary);
+  background: var(--color-accent-primary);
 }
 
 .cta-blob {

@@ -196,19 +196,7 @@ body {
   }
 }
 
-@keyframes gradientShift {
-  0% {
-    background-position: 0% 50%;
-  }
 
-  50% {
-    background-position: 100% 50%;
-  }
-
-  100% {
-    background-position: 0% 50%;
-  }
-}
 
 @keyframes lineGrow {
   from {
@@ -234,12 +222,7 @@ body {
 
 /* Utilities */
 .gradient-text {
-  background: var(--gradient-primary);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-  background-size: 200% 200%;
-  animation: gradientShift 4s ease infinite;
+  color: var(--color-accent-primary);
 }
 
 .sketch-text {
