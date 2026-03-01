@@ -1,6 +1,15 @@
-import './App.css'
+import { useState } from 'react';
+import './App.css';
+import { AuthProvider, useAuth } from './context/AuthContext';
+import AuthModal from './components/AuthModal';
 
-function App() {
+function AppInner() {
+  const { user, logout, loading } = useAuth();
+  const [modalOpen, setModalOpen] = useState(false);
+  const [modalTab, setModalTab] = useState<'login' | 'register'>('login');
+
+  const openLogin = () => { setModalTab('login'); setModalOpen(true); };
+  const openRegister = () => { setModalTab('register'); setModalOpen(true); };
   return (
     <div className="app">
 
@@ -53,8 +62,17 @@ function App() {
             <a href="#testimonials" className="nav-link">Success Stories</a>
           </div>
           <div className="nav-actions">
-            <button className="btn btn-ghost">Log In</button>
-            <button className="btn btn-primary btn-sm">Get Started →</button>
+            {loading ? null : user ? (
+              <>
+                <span className="nav-user-greeting">👋 {user.name || user.email.split('@')[0]}</span>
+                <button id="nav-logout" className="btn btn-ghost" onClick={logout}>Log Out</button>
+              </>
+            ) : (
+              <>
+                <button id="nav-login" className="btn btn-ghost" onClick={openLogin}>Log In</button>
+                <button id="nav-get-started" className="btn btn-primary btn-sm" onClick={openRegister}>Get Started →</button>
+              </>
+            )}
           </div>
         </div>
       </nav>
@@ -85,13 +103,13 @@ function App() {
           </p>
 
           <div className="hero-cta">
-            <button className="btn btn-primary btn-lg">
+            <button id="hero-cta-candidate" className="btn btn-primary btn-lg" onClick={openRegister}>
               <span>Find Your Dream Job</span>
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
                 <path d="M5 12h14M12 5l7 7-7 7" />
               </svg>
             </button>
-            <button className="btn btn-ghost btn-lg">
+            <button id="hero-cta-recruiter" className="btn btn-ghost btn-lg" onClick={openRegister}>
               I'm a Recruiter →
             </button>
           </div>
@@ -129,6 +147,9 @@ function App() {
             <div className="floating-card-sub">Tomorrow at 2:00 PM</div>
           </div>
         </div>
+
+        {/* Auth Modal */}
+        {modalOpen && <AuthModal onClose={() => setModalOpen(false)} defaultTab={modalTab} />}
 
         {/* Film strip ticks */}
         <div className="panel-ticker" aria-hidden="true">
@@ -340,7 +361,15 @@ function App() {
       </footer>
 
     </div>
-  )
+  );
 }
 
-export default App
+function App() {
+  return (
+    <AuthProvider>
+      <AppInner />
+    </AuthProvider>
+  );
+}
+
+export default App;
