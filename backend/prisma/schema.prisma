@@ -11,37 +11,70 @@ datasource db {
 }
 
 model User {
-  id        String   @id @default(auto()) @map("_id") @db.ObjectId
-  email     String   @unique
-  name      String?
-  role      Role     @default(CANDIDATE)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id           String   @id @default(auto()) @map("_id") @db.ObjectId
+  email        String   @unique
+  name         String?
+  password     String
+  role         Role     @default(CANDIDATE)
+  bio          String?
+  avatarUrl    String?
+  location     String?
+  skills       String[]
+  resumeUrl    String?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
 
   // Relationships
   applications Application[]
   jobPostings  JobPosting[]
+  savedJobs    SavedJob[]
+  company      Company?
 }
 
-model JobPosting {
+model Company {
   id          String   @id @default(auto()) @map("_id") @db.ObjectId
-  title       String
-  description String
-  techStack   String[]
-  priority    Int      @default(0) // Weight or priority
-  recruiterId String   @db.ObjectId
+  name        String
+  description String?
+  logoUrl     String?
+  website     String?
+  location    String?
+  recruiterId String   @unique @db.ObjectId
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
   // Relationships
+  recruiter   User         @relation(fields: [recruiterId], references: [id])
+  jobPostings JobPosting[]
+}
+
+model JobPosting {
+  id             String         @id @default(auto()) @map("_id") @db.ObjectId
+  title          String
+  description    String
+  techStack      String[]
+  priority       Int            @default(0)
+  status         JobStatus      @default(OPEN)
+  employmentType EmploymentType @default(FULL_TIME)
+  location       String?
+  salaryMin      Int?
+  salaryMax      Int?
+  recruiterId    String         @db.ObjectId
+  companyId      String?        @db.ObjectId
+  createdAt      DateTime       @default(now())
+  updatedAt      DateTime       @updatedAt
+
+  // Relationships
   recruiter    User          @relation(fields: [recruiterId], references: [id])
+  company      Company?      @relation(fields: [companyId], references: [id])
   applications Application[]
+  savedBy      SavedJob[]
 }
 
 model Application {
   id          String            @id @default(auto()) @map("_id") @db.ObjectId
-  resumeUrl   String // Link to PDF resume
-  matchScore  Float? // Match score
+  resumeUrl   String
+  coverLetter String?
+  matchScore  Float?
   candidateId String            @db.ObjectId
   jobId       String            @db.ObjectId
   status      ApplicationStatus @default(APPLIED)
@@ -55,9 +88,36 @@ model Application {
   @@unique([candidateId, jobId])
 }
 
+model SavedJob {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  candidateId String   @db.ObjectId
+  jobId       String   @db.ObjectId
+  createdAt   DateTime @default(now())
+
+  // Relationships
+  candidate User       @relation(fields: [candidateId], references: [id])
+  job       JobPosting @relation(fields: [jobId], references: [id])
+
+  @@unique([candidateId, jobId])
+}
+
 enum Role {
   CANDIDATE
   RECRUITER
+}
+
+enum JobStatus {
+  DRAFT
+  OPEN
+  CLOSED
+}
+
+enum EmploymentType {
+  FULL_TIME
+  PART_TIME
+  CONTRACT
+  INTERNSHIP
+  FREELANCE
 }
 
 enum ApplicationStatus {

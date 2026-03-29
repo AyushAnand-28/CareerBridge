@@ -1072,3 +1072,43 @@
     padding: 4rem 1.25rem;
   }
 }
+
+/* ─── App navbar (authenticated pages) ─────────────────────────────────── */
+.navbar--app {
+  border-bottom-color: rgba(99, 102, 241, 0.25);
+  background: rgba(13, 13, 26, 0.92);
+}
+
+.nav-link--active {
+  color: #818cf8 !important;
+}
+.nav-link--active::after {
+  width: 100% !important;
+  background: #6366f1 !important;
+}
+
+/* Pages that live below the fixed navbar need top padding */
+.jobs-page,
+.job-detail-page,
+.dashboard-page,
+.profile-page {
+  padding-top: 5.5rem;
+}
+
+/* ─── Page loading (spinner shown during auth check) ────────────────────── */
+.page-loading {
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #0d0d1a;
+}
+.spinner {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  border: 3px solid rgba(99, 102, 241, 0.25);
+  border-top-color: #6366f1;
+  animation: spin 0.75s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
