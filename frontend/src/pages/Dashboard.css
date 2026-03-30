@@ -117,6 +117,30 @@
 .app-meta { display: flex; gap: 0.75rem; font-size: 0.78rem; color: #6b7280; flex-wrap: wrap; }
 .match-score { color: #f59e0b; font-weight: 600; }
 
+/* ─── AI Insight Block ──────────────────────────────────────────────────── */
+.ai-insight {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+  padding: 0.5rem 0.75rem;
+  background: rgba(139, 92, 246, 0.08);
+  border: 1px solid rgba(139, 92, 246, 0.2);
+  border-radius: 8px;
+  max-width: 520px;
+}
+.ai-insight--recruiter {
+  max-width: 100%;
+  margin-top: 0.6rem;
+}
+.ai-insight-icon { font-size: 0.85rem; flex-shrink: 0; margin-top: 1px; }
+.ai-insight-text {
+  font-size: 0.78rem;
+  color: #c4b5fd;
+  line-height: 1.5;
+  font-style: italic;
+}
+
 /* ─── Status Badges ────────────────────────────────────────────────────── */
 .status-badge {
   padding: 0.3rem 0.8rem;

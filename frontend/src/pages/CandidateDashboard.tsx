@@ -8,6 +8,7 @@ interface Application {
   id: string;
   status: 'APPLIED' | 'REVIEWING' | 'INTERVIEW' | 'REJECTED' | 'ACCEPTED';
   matchScore: number | null;
+  aiAnalysis: string | null;
   createdAt: string;
   resumeUrl: string;
   coverLetter: string | null;
@@ -54,13 +55,16 @@ export default function CandidateDashboard() {
         method: 'DELETE',
         headers: { Authorization: `Bearer ${token}` },
       });
-      if (!res.ok) throw new Error('Failed to withdraw');
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        throw new Error(data.error || 'Failed to withdraw application');
+      }
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['my-applications'] });
-      toast.success('Application withdrawn');
+      toast.success('Application withdrawn successfully');
     },
-    onError: () => toast.error('Failed to withdraw application'),
+    onError: (e: Error) => toast.error(e.message),
   });
 
   const filtered = filter === 'ALL' ? applications : applications.filter(a => a.status === filter);
@@ -137,6 +141,12 @@ export default function CandidateDashboard() {
                         <span className="match-score">⚡ {app.matchScore}% match</span>
                       )}
                     </div>
+                    {app.aiAnalysis && (
+                      <div className="ai-insight">
+                        <span className="ai-insight-icon">🤖</span>
+                        <span className="ai-insight-text">{app.aiAnalysis}</span>
+                      </div>
+                    )}
                   </div>
                 </div>
                 <div className="app-card-right">

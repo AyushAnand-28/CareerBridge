@@ -8,6 +8,7 @@ export interface AuthUser {
     email: string;
     role: 'CANDIDATE' | 'RECRUITER';
     createdAt: string;
+    resumeUrl: string | null;
 }
 
 interface AuthContextType {

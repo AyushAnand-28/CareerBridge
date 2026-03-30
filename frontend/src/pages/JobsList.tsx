@@ -17,6 +17,7 @@ interface Job {
   recruiter: { name: string | null; email: string };
   company: { name: string; logoUrl: string | null; location: string | null } | null;
   _count: { applications: number };
+  matchScore?: number; // present only in recommended feed
 }
 
 interface JobsResponse {
@@ -42,7 +43,8 @@ function formatSalary(min: number | null, max: number | null): string {
 }
 
 export default function JobsList() {
-  const { token } = useAuth();
+  const { token, user } = useAuth();
+  const [activeTab, setActiveTab] = useState<'ALL' | 'RECOMMENDED'>('ALL');
   const [search, setSearch] = useState('');
   const [employmentType, setEmploymentType] = useState('');
   const [location, setLocation] = useState('');
@@ -65,28 +67,55 @@ export default function JobsList() {
   if (location) params.location = location;
 
   const { data, isLoading, isError } = useQuery({
-    queryKey: ['jobs', params],
-    queryFn: () => fetchJobs(params),
+    queryKey: activeTab === 'ALL' ? ['jobs', params] : ['recommended-jobs'],
+    queryFn: async () => {
+      if (activeTab === 'ALL') return fetchJobs(params);
+      const res = await fetch('/api/jobs/recommended', { headers: { Authorization: `Bearer ${token}` } });
+      if (!res.ok) throw new Error('Failed to fetch recommended jobs');
+      return res.json() as Promise<JobsResponse>;
+    },
   });
 
-  const savedJobIds = useQuery<string[]>({
-    queryKey: ['saved-jobs'],
-    queryFn: async () => {
-      if (!token) return [];
-      const res = await fetch('/api/profile/me', { headers: { Authorization: `Bearer ${token}` } });
-      return [];
-    },
-    enabled: !!token,
-  });
+
 
   return (
     <div className="jobs-page">
       <div className="jobs-header">
         <h1 className="jobs-title">Find Your <span className="gradient-text">Dream Job</span></h1>
-        <p className="jobs-subtitle">{data?.pagination.total ?? '...'} opportunities waiting for you</p>
+        <p className="jobs-subtitle">
+            {activeTab === 'ALL'
+                ? `${data?.pagination.total ?? '...'} opportunities waiting for you`
+                : `${data?.pagination.total ?? '0'} roles recommended based on your profile skills`}
+        </p>
       </div>
 
+      {user?.role === 'CANDIDATE' && (
+        <div className="jobs-tabs">
+          <button
+            className={`jobs-tab-btn ${activeTab === 'ALL' ? 'jobs-tab-btn--active' : ''}`}
+            onClick={() => { setActiveTab('ALL'); setPage(1); }}
+          >
+            All Jobs
+          </button>
+          <button
+            className={`jobs-tab-btn ${activeTab === 'RECOMMENDED' ? 'jobs-tab-btn--active' : ''}`}
+            onClick={() => setActiveTab('RECOMMENDED')}
+          >
+            ⭐ Recommended For You
+          </button>
+        </div>
+      )}
+
+      {/* Recommended context banner */}
+      {activeTab === 'RECOMMENDED' && (
+        <div className="recommended-banner">
+          <span className="recommended-banner-icon">🧠</span>
+          <span>Showing jobs that match <strong>your profile skills</strong>, sorted by best fit. Update your skills on your profile to improve results.</span>
+        </div>
+      )}
+
       {/* Filters */}
+      {activeTab === 'ALL' && (
       <div className="jobs-filters">
         <div className="search-wrap">
           <span className="search-icon">🔍</span>
@@ -108,6 +137,7 @@ export default function JobsList() {
           onChange={e => { setLocation(e.target.value); setPage(1); }}
         />
       </div>
+      )}
 
       {/* Grid */}
       {isLoading ? (
@@ -122,10 +152,12 @@ export default function JobsList() {
       ) : data?.jobs.length === 0 ? (
         <div className="empty-state">
           <div className="empty-icon">🔍</div>
-          <p>No jobs found matching your criteria.</p>
-          <button className="btn btn-ghost" onClick={() => { setSearch(''); setDebouncedSearch(''); setEmploymentType(''); setLocation(''); }}>
-            Clear Filters
-          </button>
+          <p>{activeTab === 'RECOMMENDED' ? 'No recommended jobs found. Try expanding the skills on your profile.' : 'No jobs found matching your criteria.'}</p>
+          {activeTab === 'ALL' && (
+            <button className="btn btn-ghost" onClick={() => { setSearch(''); setDebouncedSearch(''); setEmploymentType(''); setLocation(''); }}>
+              Clear Filters
+            </button>
+          )}
         </div>
       ) : (
         <>
@@ -162,6 +194,9 @@ export default function JobsList() {
                   {formatSalary(job.salaryMin, job.salaryMax) && (
                     <span className="salary-badge">{formatSalary(job.salaryMin, job.salaryMax)}</span>
                   )}
+                  {job.matchScore != null && (
+                    <span className="match-score-badge">⚡ {job.matchScore}% match</span>
+                  )}
                   <span className="applicant-count">{job._count.applications} applied</span>
                 </div>
               </Link>
@@ -169,7 +204,7 @@ export default function JobsList() {
           </div>
 
           {/* Pagination */}
-          {data!.pagination.pages > 1 && (
+          {activeTab === 'ALL' && data!.pagination.pages > 1 && (
             <div className="pagination">
               <button className="btn btn-ghost btn-sm" disabled={page === 1} onClick={() => setPage(p => p - 1)}>← Prev</button>
               <span className="page-info">Page {page} of {data!.pagination.pages}</span>

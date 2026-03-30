@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { BrowserRouter, Routes, Route, Navigate, Link, useLocation } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Navigate, Link, useLocation, useNavigate } from 'react-router-dom';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import AuthGuard from './components/AuthGuard';
 import AuthModal from './components/AuthModal';
@@ -167,11 +167,17 @@ function LandingPage({ onRegister }: { onRegister: () => void }) {
 function AppNavbar() {
   const { user, logout } = useAuth();
   const location = useLocation();
+  const navigate = useNavigate();
   const isLanding = location.pathname === '/';
 
   if (isLanding) return null;
 
   const dashboardLink = user?.role === 'RECRUITER' ? '/recruiter' : '/dashboard';
+
+  function handleLogout() {
+    logout();
+    navigate('/');
+  }
 
   return (
     <nav className="navbar navbar--app">
@@ -181,13 +187,15 @@ function AppNavbar() {
           <span className="logo-text">Career<span className="gradient-text">Bridge</span></span>
         </Link>
         <div className="nav-links">
-          <Link to="/jobs" className={`nav-link ${location.pathname === '/jobs' ? 'nav-link--active' : ''}`}>Browse Jobs</Link>
+          {user?.role !== 'RECRUITER' && (
+            <Link to="/jobs" className={`nav-link ${location.pathname === '/jobs' ? 'nav-link--active' : ''}`}>Browse Jobs</Link>
+          )}
           <Link to={dashboardLink} className={`nav-link ${location.pathname === dashboardLink ? 'nav-link--active' : ''}`}>Dashboard</Link>
           <Link to="/profile" className={`nav-link ${location.pathname === '/profile' ? 'nav-link--active' : ''}`}>Profile</Link>
         </div>
         <div className="nav-actions">
           <span className="nav-user-greeting">👋 {user?.name || user?.email?.split('@')[0]}</span>
-          <button id="nav-logout" className="btn btn-ghost" onClick={logout}>Log Out</button>
+          <button id="nav-logout" className="btn btn-ghost" onClick={handleLogout}>Log Out</button>
         </div>
       </div>
     </nav>

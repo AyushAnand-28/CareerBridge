@@ -75,6 +75,7 @@ model Application {
   resumeUrl   String
   coverLetter String?
   matchScore  Float?
+  aiAnalysis  String?
   candidateId String            @db.ObjectId
   jobId       String            @db.ObjectId
   status      ApplicationStatus @default(APPLIED)

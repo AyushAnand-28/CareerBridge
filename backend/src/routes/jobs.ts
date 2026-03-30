@@ -68,6 +68,54 @@ router.get('/', async (req: Request, res: Response): Promise<void> => {
     }
 });
 
+// GET /api/jobs/recommended — Candidate matching jobs based on their tech stack
+router.get('/recommended', authenticate, async (req: Request, res: Response): Promise<void> => {
+    if (req.user!.role !== 'CANDIDATE') {
+        res.status(403).json({ error: 'Only candidates can view recommended jobs' });
+        return;
+    }
+
+    try {
+        const user = await prisma.user.findUnique({ where: { id: req.user!.userId }, select: { skills: true } });
+        if (!user || user.skills.length === 0) {
+            // Return empty list if user has no skills listed
+            res.json({ jobs: [], pagination: { page: 1, limit: 10, total: 0, pages: 1 } });
+            return;
+        }
+
+        // Get OPEN jobs with at least one matching skill
+        const candidateSkillsLower = user.skills.map(s => s.toLowerCase().trim());
+
+        const jobs = await prisma.jobPosting.findMany({
+            where: { 
+                status: 'OPEN',
+            },
+            // We fetch all open jobs to rank them by best match if we can't reliably filter case-insensitively with hasSome on Prisma Postgres array, but we can do it in memory for now safely given scale.
+            include: {
+                recruiter: { select: { id: true, name: true, email: true } },
+                company: { select: { id: true, name: true, logoUrl: true, location: true } },
+                _count: { select: { applications: true } },
+            }
+        });
+
+        // Filter & sort jobs in memory by overlapping skillset
+        const matchedJobs = jobs.map(job => {
+            const jobTech = job.techStack.map(t => t.toLowerCase().trim());
+            const matchCount = jobTech.filter(t => candidateSkillsLower.includes(t)).length;
+            return { job, matchCount, matchScore: jobTech.length ? Math.round((matchCount / jobTech.length) * 100) : 0 };
+        }).filter(m => m.matchCount > 0) // Only jobs with at least 1 matching skill
+          .sort((a, b) => b.matchScore - a.matchScore); // Best match % first
+
+        res.json({ 
+            jobs: matchedJobs.map(m => ({ ...m.job, matchScore: m.matchScore, matchedSkills: m.matchCount })),
+            pagination: { page: 1, limit: matchedJobs.length, total: matchedJobs.length, pages: 1 }
+        });
+    } catch (error) {
+        console.error('Recommended jobs error:', error);
+        res.status(500).json({ error: 'Failed to fetch recommended jobs' });
+    }
+});
+
 // GET /api/jobs/:id — public
 router.get('/:id', async (req: Request, res: Response): Promise<void> => {
     const id = req.params.id as string;

@@ -44,7 +44,7 @@ router.post('/register', async (req: Request, res: Response): Promise<void> => {
                 password: hashedPassword,
                 role: role === 'RECRUITER' ? 'RECRUITER' : 'CANDIDATE',
             },
-            select: { id: true, name: true, email: true, role: true, createdAt: true },
+            select: { id: true, name: true, email: true, role: true, createdAt: true, resumeUrl: true },
         });
 
         const token = signToken(user.id, user.role);
@@ -93,7 +93,7 @@ router.get('/me', authenticate, async (req: Request, res: Response): Promise<voi
     try {
         const user = await prisma.user.findUnique({
             where: { id: req.user!.userId },
-            select: { id: true, name: true, email: true, role: true, createdAt: true },
+            select: { id: true, name: true, email: true, role: true, createdAt: true, resumeUrl: true },
         });
 
         if (!user) {

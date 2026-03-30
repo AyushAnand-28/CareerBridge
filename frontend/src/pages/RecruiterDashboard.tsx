@@ -7,6 +7,7 @@ import './Dashboard.css';
 interface Job {
   id: string;
   title: string;
+  description: string;
   status: 'DRAFT' | 'OPEN' | 'CLOSED';
   employmentType: string;
   location: string | null;
@@ -21,6 +22,7 @@ interface Applicant {
   id: string;
   status: string;
   matchScore: number | null;
+  aiAnalysis: string | null;
   createdAt: string;
   resumeUrl: string;
   coverLetter: string | null;
@@ -79,6 +81,7 @@ export default function RecruiterDashboard() {
     mutationFn: (data: typeof jobForm) => apiRequest('/api/jobs', 'POST', token!, data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['recruiter-jobs'] });
+      queryClient.invalidateQueries({ queryKey: ['jobs'] });
       toast.success('Job posted successfully!');
       setShowJobForm(false);
       resetForm();
@@ -91,6 +94,8 @@ export default function RecruiterDashboard() {
       apiRequest(`/api/jobs/${id}`, 'PUT', token!, data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['recruiter-jobs'] });
+      queryClient.invalidateQueries({ queryKey: ['jobs'] });
+      queryClient.invalidateQueries({ queryKey: ['job'] });
       toast.success('Job updated!');
       setEditingJob(null);
       setShowJobForm(false);
@@ -127,7 +132,7 @@ export default function RecruiterDashboard() {
     setEditingJob(job);
     setJobForm({
       title: job.title,
-      description: '',
+      description: job.description || '',
       techStack: job.techStack.join(', '),
       employmentType: job.employmentType,
       location: job.location || '',
@@ -262,6 +267,13 @@ export default function RecruiterDashboard() {
                           {app.candidate.skills.slice(0, 6).map(s => (
                             <span key={s} className="skill-chip">{s}</span>
                           ))}
+                        </div>
+                      )}
+
+                      {app.aiAnalysis && (
+                        <div className="ai-insight ai-insight--recruiter">
+                          <span className="ai-insight-icon">🤖</span>
+                          <span className="ai-insight-text">{app.aiAnalysis}</span>
                         </div>
                       )}
 

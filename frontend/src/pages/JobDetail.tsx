@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { useQuery, useMutation } from '@tanstack/react-query';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'react-toastify';
 import { useAuth } from '../context/AuthContext';
 import './JobDetail.css';
@@ -33,6 +33,7 @@ export default function JobDetail() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const { user, token } = useAuth();
+  const queryClient = useQueryClient();
   const [showApplyModal, setShowApplyModal] = useState(false);
   const [coverLetter, setCoverLetter] = useState('');
   const [resumeFile, setResumeFile] = useState<File | null>(null);
@@ -45,6 +46,19 @@ export default function JobDetail() {
       return res.json();
     },
   });
+
+  // Check if candidate has already applied to this job
+  const { data: myAppsData } = useQuery<{ applications: { jobId: string; status: string }[] }>({
+    queryKey: ['my-applications'],
+    queryFn: async () => {
+      const res = await fetch('/api/applications/me', { headers: { Authorization: `Bearer ${token}` } });
+      if (!res.ok) return { applications: [] };
+      return res.json();
+    },
+    enabled: !!token && user?.role === 'CANDIDATE',
+  });
+
+  const hasApplied = myAppsData?.applications.some(app => app.jobId === id) ?? false;
 
   const applyMutation = useMutation({
     mutationFn: async () => {
@@ -62,8 +76,14 @@ export default function JobDetail() {
       if (!res.ok) throw new Error(d.error || 'Application failed');
       return d;
     },
-    onSuccess: () => {
+    onSuccess: (data) => {
+      // Invalidate cache so dashboard immediately shows the new application
+      queryClient.invalidateQueries({ queryKey: ['my-applications'] });
       toast.success('Application submitted! 🎉');
+      // Warn if the PDF couldn't be read as text (e.g. scanned/image PDF)
+      if (resumeFile && data.pdfExtracted === false) {
+        toast.warn('⚠️ Your PDF could not be parsed as text (it may be image-based or scanned). Match score was calculated using your profile skills only. For best results, upload a text-based PDF.', { autoClose: 8000 });
+      }
       setShowApplyModal(false);
       navigate('/dashboard');
     },
@@ -159,9 +179,19 @@ export default function JobDetail() {
           <div className="sidebar-card apply-card">
             <div className="apply-salary">{formatSalary(job.salaryMin, job.salaryMax)}</div>
             {user?.role === 'CANDIDATE' && job.status === 'OPEN' ? (
-              <button className="btn btn-primary btn-full" onClick={() => setShowApplyModal(true)}>
-                Apply Now →
-              </button>
+              hasApplied ? (
+                <div className="already-applied-badge">
+                  <span className="already-applied-icon">✅</span>
+                  <div>
+                    <strong>Already Applied</strong>
+                    <p>You've submitted an application for this role. Check your dashboard for status updates.</p>
+                  </div>
+                </div>
+              ) : (
+                <button className="btn btn-primary btn-full" onClick={() => setShowApplyModal(true)}>
+                  Apply Now →
+                </button>
+              )
             ) : !user ? (
               <button className="btn btn-primary btn-full" onClick={() => navigate('/')}>
                 Sign In to Apply
@@ -185,12 +215,13 @@ export default function JobDetail() {
             </div>
             <form onSubmit={e => { e.preventDefault(); applyMutation.mutate(); }} className="apply-form">
               <div className="form-field">
-                <label>Resume (PDF) *</label>
+                <label>Resume (PDF) {user?.resumeUrl ? '(Optional)' : '*'}</label>
                 <input
                   type="file"
                   accept="application/pdf"
                   onChange={e => setResumeFile(e.target.files?.[0] || null)}
                   className="file-input"
+                  required={!user?.resumeUrl}
                 />
                 <p className="field-hint">Max 5MB PDF. If no file is uploaded, we'll use the resume URL from your profile.</p>
               </div>
