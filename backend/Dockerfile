@@ -6,6 +6,9 @@ FROM node:20-alpine AS builder
 
 WORKDIR /app
 
+# Install OpenSSL (required by Prisma engine on Alpine Linux)
+RUN apk add --no-cache openssl
+
 # Copy package.json AND the prisma folder first.
 # This prevents the `postinstall` script (`prisma generate`) from crashing
 # during `npm ci` because it needs `prisma/schema.prisma` to exist.
@@ -29,6 +32,9 @@ FROM node:20-alpine AS runner
 WORKDIR /app
 
 ENV NODE_ENV=production
+
+# Install OpenSSL here as well so the production runtime has it
+RUN apk add --no-cache openssl
 
 # Again, copy package.json and prisma folder before npm ci
 COPY package*.json ./
