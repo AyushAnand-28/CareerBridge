@@ -80,13 +80,16 @@ export default function JobsList() {
 
   return (
     <div className="jobs-page">
-      <div className="jobs-header">
-        <h1 className="jobs-title">Find Your <span className="gradient-text">Dream Job</span></h1>
-        <p className="jobs-subtitle">
+      <div className="jobs-hero-banner">
+        <div className="jobs-header">
+          <div className="jobs-badge">✏️ Open Roles</div>
+          <h1 className="jobs-title">Find Your <span className="gradient-text">Dream Job</span></h1>
+          <p className="jobs-subtitle">
             {activeTab === 'ALL'
-                ? `${data?.pagination.total ?? '...'} opportunities waiting for you`
-                : `${data?.pagination.total ?? '0'} roles recommended based on your profile skills`}
-        </p>
+              ? `${data?.pagination.total ?? '...'} opportunities waiting for you`
+              : `${data?.pagination.total ?? '0'} roles recommended based on your profile skills`}
+          </p>
+        </div>
       </div>
 
       {user?.role === 'CANDIDATE' && (
@@ -101,7 +104,7 @@ export default function JobsList() {
             className={`jobs-tab-btn ${activeTab === 'RECOMMENDED' ? 'jobs-tab-btn--active' : ''}`}
             onClick={() => setActiveTab('RECOMMENDED')}
           >
-            ⭐ Recommended For You
+            Recommended For You
           </button>
         </div>
       )}
@@ -116,27 +119,27 @@ export default function JobsList() {
 
       {/* Filters */}
       {activeTab === 'ALL' && (
-      <div className="jobs-filters">
-        <div className="search-wrap">
-          <span className="search-icon">🔍</span>
+        <div className="jobs-filters">
+          <div className="search-wrap">
+            <span className="search-icon">🔍</span>
+            <input
+              className="search-input"
+              placeholder="Search jobs, skills, company…"
+              value={search}
+              onChange={e => handleSearchChange(e.target.value)}
+            />
+          </div>
+          <select className="filter-select" value={employmentType} onChange={e => { setEmploymentType(e.target.value); setPage(1); }}>
+            <option value="">All Types</option>
+            {EMPLOYMENT_TYPES.map(t => <option key={t} value={t}>{t.replace('_', ' ')}</option>)}
+          </select>
           <input
-            className="search-input"
-            placeholder="Search jobs, skills, company…"
-            value={search}
-            onChange={e => handleSearchChange(e.target.value)}
+            className="filter-input"
+            placeholder="📍 Location"
+            value={location}
+            onChange={e => { setLocation(e.target.value); setPage(1); }}
           />
         </div>
-        <select className="filter-select" value={employmentType} onChange={e => { setEmploymentType(e.target.value); setPage(1); }}>
-          <option value="">All Types</option>
-          {EMPLOYMENT_TYPES.map(t => <option key={t} value={t}>{t.replace('_', ' ')}</option>)}
-        </select>
-        <input
-          className="filter-input"
-          placeholder="📍 Location"
-          value={location}
-          onChange={e => { setLocation(e.target.value); setPage(1); }}
-        />
-      </div>
       )}
 
       {/* Grid */}

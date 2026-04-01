@@ -103,7 +103,7 @@ router.get('/recommended', authenticate, async (req: Request, res: Response): Pr
             const jobTech = job.techStack.map(t => t.toLowerCase().trim());
             const matchCount = jobTech.filter(t => candidateSkillsLower.includes(t)).length;
             return { job, matchCount, matchScore: jobTech.length ? Math.round((matchCount / jobTech.length) * 100) : 0 };
-        }).filter(m => m.matchCount > 0) // Only jobs with at least 1 matching skill
+        }).filter(m => m.matchScore >= 75) // Only jobs matching 75%+ of required skills
           .sort((a, b) => b.matchScore - a.matchScore); // Best match % first
 
         res.json({ 

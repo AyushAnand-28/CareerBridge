@@ -3,6 +3,7 @@ import { BrowserRouter, Routes, Route, Navigate, Link, useLocation, useNavigate 
 import { AuthProvider, useAuth } from './context/AuthContext';
 import AuthGuard from './components/AuthGuard';
 import AuthModal from './components/AuthModal';
+import AppFooter from './components/AppFooter';
 import JobsList from './pages/JobsList';
 import JobDetail from './pages/JobDetail';
 import CandidateDashboard from './pages/CandidateDashboard';
@@ -132,6 +133,100 @@ function LandingPage({ onRegister }: { onRegister: () => void }) {
         </div>
       </section>
 
+      {/* ── How It Works ── */}
+      <section className="how-it-works" id="how-it-works">
+        <div className="how-container">
+          <div className="section-tag">Simple Process</div>
+          <h2 className="hiw-title">Get hired in <span className="gradient-text">3 easy steps</span></h2>
+          <div className="steps-grid">
+            <div className="step-card">
+              <div className="step-number">01</div>
+              <h3 className="step-title">Build Your Profile</h3>
+              <p className="step-desc">Create a rich candidate profile with your skills, experience, and upload your resume. Takes less than 5 minutes.</p>
+            </div>
+            <div className="step-card">
+              <div className="step-number">02</div>
+              <h3 className="step-title">Get Matched Instantly</h3>
+              <p className="step-desc">Our AI engine scans thousands of open roles and surfaces your best-fit opportunities, ranked by match score.</p>
+            </div>
+            <div className="step-card">
+              <div className="step-number">03</div>
+              <h3 className="step-title">Apply & Get Hired</h3>
+              <p className="step-desc">One-click apply with your pre-filled profile. Track every application stage in real-time from your dashboard.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ── Browse by Category ── */}
+      <section className="features" id="categories" style={{ background: 'var(--color-bg-secondary)' }}>
+        <div className="features-container">
+          <div className="section-tag">Explore Roles</div>
+          <h2 className="features-title">Browse by <span className="gradient-text">category</span></h2>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))', gap: '3px', background: 'rgba(245,166,35,0.12)', border: '2px solid rgba(245,166,35,0.2)', borderRadius: '10px', overflow: 'hidden', marginTop: '1rem' }}>
+            {[
+              { icon: '💻', label: 'Engineering', count: '1,240+ jobs' },
+              { icon: '🎨', label: 'Design & UX', count: '380+ jobs' },
+              { icon: '📈', label: 'Marketing', count: '510+ jobs' },
+              { icon: '💼', label: 'Product', count: '290+ jobs' },
+              { icon: '🔐', label: 'Security', count: '175+ jobs' },
+              { icon: '📊', label: 'Data Science', count: '620+ jobs' },
+              { icon: '☁️', label: 'DevOps & Cloud', count: '430+ jobs' },
+              { icon: '🤝', label: 'Sales', count: '340+ jobs' },
+            ].map(cat => (
+              <div key={cat.label} className="feature-card" style={{ cursor: 'pointer' }} onClick={onRegister}>
+                <div className="feature-icon-wrap"><span className="feature-icon">{cat.icon}</span></div>
+                <h3 className="feature-title">{cat.label}</h3>
+                <p className="feature-description" style={{ fontSize: '0.78rem', color: 'var(--color-accent-primary)', fontWeight: 700 }}>{cat.count}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ── Testimonials ── */}
+      <section className="testimonials" id="testimonials">
+        <div className="testimonials-container">
+          <div className="section-tag">Success Stories</div>
+          <h2 className="testimonials-title">Loved by <span className="gradient-text">thousands</span></h2>
+          <div className="testimonials-grid">
+            <div className="testimonial-card testimonial-card--featured">
+              <div className="testimonial-stars">★★★★★</div>
+              <p className="testimonial-text">"CareerBridge's AI matched me to a Senior React role I never would have found on my own. The match score told me exactly where I stood before I even applied. Got the offer in 2 weeks."</p>
+              <div className="testimonial-author">
+                <div className="author-avatar author-avatar--1">AS</div>
+                <div>
+                  <div className="author-name">Ananya Sharma</div>
+                  <div className="author-role">Senior Frontend Engineer @ Stripe</div>
+                </div>
+              </div>
+            </div>
+            <div className="testimonial-card">
+              <div className="testimonial-stars">★★★★★</div>
+              <p className="testimonial-text">"As a recruiter, the built-in ATS and AI candidate ranking saved our team 15+ hours a week. We filled 3 senior roles in under a month."</p>
+              <div className="testimonial-author">
+                <div className="author-avatar author-avatar--2">MR</div>
+                <div>
+                  <div className="author-name">Marcus Rodriguez</div>
+                  <div className="author-role">Engineering Lead @ Vercel</div>
+                </div>
+              </div>
+            </div>
+            <div className="testimonial-card">
+              <div className="testimonial-stars">★★★★★</div>
+              <p className="testimonial-text">"The recommended jobs tab is incredibly accurate. It showed me roles I was actually qualified for — no more wading through irrelevant listings. Landed a dream job in 3 weeks."</p>
+              <div className="testimonial-author">
+                <div className="author-avatar author-avatar--3">PK</div>
+                <div>
+                  <div className="author-name">Priya Kulkarni</div>
+                  <div className="author-role">Full-Stack Engineer @ Notion</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
       <section className="cta">
         <div className="cta-container">
           <div className="cta-inner">
@@ -170,7 +265,7 @@ function AppNavbar() {
   const navigate = useNavigate();
   const isLanding = location.pathname === '/';
 
-  if (isLanding) return null;
+  if (isLanding && !user) return null;
 
   const dashboardLink = user?.role === 'RECRUITER' ? '/recruiter' : '/dashboard';
 
@@ -182,7 +277,7 @@ function AppNavbar() {
   return (
     <nav className="navbar navbar--app">
       <div className="navbar-inner">
-        <Link to={user ? dashboardLink : '/'} className="nav-logo">
+        <Link to="/" className="nav-logo">
           <span className="logo-icon">✏️</span>
           <span className="logo-text">Career<span className="gradient-text">Bridge</span></span>
         </Link>
@@ -223,31 +318,34 @@ function AppInner() {
     <>
       <AppNavbar />
       <Routes>
-        {/* Public landing */}
+        {/* Public landing — accessible to everyone, no redirect for logged-in users */}
         <Route
           path="/"
           element={
-            user
-              ? <Navigate to={user.role === 'RECRUITER' ? '/recruiter' : '/jobs'} replace />
-              : <>
-                  <nav className="navbar">
-                    <div className="navbar-inner">
-                      <div className="nav-logo">
-                        <span className="logo-icon">✏️</span>
-                        <span className="logo-text">Career<span className="gradient-text">Bridge</span></span>
-                      </div>
-                      <div className="nav-links">
-                        <a href="#features" className="nav-link">Features</a>
-                      </div>
-                      <div className="nav-actions">
-                        <button id="nav-login" className="btn btn-ghost" onClick={openLogin}>Log In</button>
-                        <button id="nav-get-started" className="btn btn-primary btn-sm" onClick={openRegister}>Get Started →</button>
-                      </div>
+            <>
+              {!user && (
+                <nav className="navbar">
+                  <div className="navbar-inner">
+                    <div className="nav-logo">
+                      <span className="logo-icon">✏️</span>
+                      <span className="logo-text">Career<span className="gradient-text">Bridge</span></span>
                     </div>
-                  </nav>
-                  <LandingPage onRegister={openRegister} />
-                  {modalOpen && <AuthModal onClose={() => setModalOpen(false)} defaultTab={modalTab} />}
-                </>
+                    <div className="nav-links">
+                      <a href="#features" className="nav-link">Features</a>
+                      <a href="#how-it-works" className="nav-link">How It Works</a>
+                      <a href="#categories" className="nav-link">Categories</a>
+                      <a href="#testimonials" className="nav-link">Testimonials</a>
+                    </div>
+                    <div className="nav-actions">
+                      <button id="nav-login" className="btn btn-ghost" onClick={openLogin}>Log In</button>
+                      <button id="nav-get-started" className="btn btn-primary btn-sm" onClick={openRegister}>Get Started →</button>
+                    </div>
+                  </div>
+                </nav>
+              )}
+              <LandingPage onRegister={openRegister} />
+              {modalOpen && <AuthModal onClose={() => setModalOpen(false)} defaultTab={modalTab} />}
+            </>
           }
         />
 
@@ -273,8 +371,16 @@ function AppInner() {
         {/* Fallback */}
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
+      <AppFooterConditional />
     </>
   );
+}
+
+// ─── Footer: shown on all inner pages, hidden on landing ───────────────────
+function AppFooterConditional() {
+  const location = useLocation();
+  if (location.pathname === '/') return null;
+  return <AppFooter />;
 }
 
 export default function App() {

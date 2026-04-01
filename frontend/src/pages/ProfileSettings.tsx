@@ -142,15 +142,17 @@ export default function ProfileSettings() {
 
   return (
     <div className="profile-page">
-      <div className="profile-header">
-        <h1 className="dashboard-title">Profile Settings</h1>
-        <p className="dashboard-subtitle">Keep your profile up to date for better job matches</p>
+      <div className="profile-hero">
+        <div className="profile-header">
+          <div className="profile-badge">✏️ Your Profile</div>
+          <h1 className="profile-title">Profile Settings</h1>
+          <p className="profile-subtitle">Keep your profile up to date for better job matches</p>
+        </div>
       </div>
 
       <div className="profile-layout">
         {/* Avatar Card */}
-        <div className="profile-sidebar">
-          <div className="avatar-card">
+        <div className="avatar-card">
             <label className="avatar-upload-label">
               <div className="avatar-circle">
                 {(avatarPreview || profile?.avatarUrl) ? (
@@ -162,20 +164,19 @@ export default function ProfileSettings() {
               </div>
               <input type="file" accept="image/*" className="hidden" onChange={e => e.target.files?.[0] && handleAvatarChange(e.target.files[0])} />
             </label>
-            {avatarFile && (
-              <button className="btn btn-primary btn-sm" onClick={() => uploadAvatar.mutate()} disabled={uploadAvatar.isPending}>
-                {uploadAvatar.isPending ? 'Uploading…' : 'Save Avatar'}
-              </button>
-            )}
-            <div className="profile-info-summary">
-              <strong>{profile?.name || 'No name set'}</strong>
-              <span>{profile?.email}</span>
-              <span className="role-tag">{profile?.role}</span>
-            </div>
+          {avatarFile && (
+            <button className="btn btn-primary btn-sm" onClick={() => uploadAvatar.mutate()} disabled={uploadAvatar.isPending}>
+              {uploadAvatar.isPending ? 'Uploading…' : 'Save Avatar'}
+            </button>
+          )}
+          <div className="profile-info-summary">
+            <strong>{profile?.name || 'No name set'}</strong>
+            <span>{profile?.email}</span>
+            <span className="role-tag">{profile?.role}</span>
           </div>
         </div>
 
-        <div className="profile-main">
+        <div className="settings-sections">
           {/* Basic Info */}
           <div className="settings-section">
             <h2 className="section-title">Basic Information</h2>

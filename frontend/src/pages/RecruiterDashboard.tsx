@@ -37,9 +37,9 @@ interface Applicant {
 }
 
 const JOB_STATUS_COLORS: Record<string, { color: string; bg: string }> = {
-  OPEN:   { color: '#22c55e', bg: 'rgba(34,197,94,0.12)' },
-  DRAFT:  { color: '#f59e0b', bg: 'rgba(245,158,11,0.12)' },
-  CLOSED: { color: '#6b7280', bg: 'rgba(107,114,128,0.12)' },
+  OPEN:   { color: '#22c55e',                        bg: 'rgba(34,197,94,0.12)'  },
+  DRAFT:  { color: 'var(--color-accent-primary)',    bg: 'rgba(245,166,35,0.12)' },
+  CLOSED: { color: 'var(--color-text-muted)',        bg: 'rgba(122,98,72,0.12)'  },
 };
 
 const APP_STATUS_ORDER = ['APPLIED', 'REVIEWING', 'INTERVIEW', 'REJECTED', 'ACCEPTED'] as const;
@@ -156,28 +156,31 @@ export default function RecruiterDashboard() {
 
   return (
     <div className="dashboard-page">
-      <div className="dashboard-header">
-        <div>
-          <h1 className="dashboard-title">Recruiter Dashboard</h1>
-          <p className="dashboard-subtitle">Manage your job postings and applicants, {user?.name || user?.email?.split('@')[0]}</p>
+      <div className="dashboard-hero">
+        <div className="dashboard-header">
+          <div>
+            <div className="dashboard-badge">✏️ Recruiter Hub</div>
+            <h1 className="dashboard-title">Recruiter Dashboard</h1>
+            <p className="dashboard-subtitle">Manage your job postings and applicants, {user?.name || user?.email?.split('@')[0]}</p>
+          </div>
+          <button className="btn btn-primary" onClick={() => { setShowJobForm(true); setEditingJob(null); resetForm(); }}>
+            + Post New Job
+          </button>
         </div>
-        <button className="btn btn-primary" onClick={() => { setShowJobForm(true); setEditingJob(null); resetForm(); }}>
-          + Post New Job
-        </button>
       </div>
 
       {/* Summary stats */}
       <div className="stats-row">
-        <div className="stat-card" style={{ borderColor: '#6366f1' }}>
-          <span className="stat-card-num" style={{ color: '#6366f1' }}>{jobs.length}</span>
+        <div className="stat-card">
+          <span className="stat-card-num">{jobs.length}</span>
           <span className="stat-card-label">Total Jobs</span>
         </div>
-        <div className="stat-card" style={{ borderColor: '#22c55e' }}>
+        <div className="stat-card">
           <span className="stat-card-num" style={{ color: '#22c55e' }}>{jobs.filter(j => j.status === 'OPEN').length}</span>
           <span className="stat-card-label">Active</span>
         </div>
-        <div className="stat-card" style={{ borderColor: '#f59e0b' }}>
-          <span className="stat-card-num" style={{ color: '#f59e0b' }}>{jobs.reduce((a, j) => a + j._count.applications, 0)}</span>
+        <div className="stat-card">
+          <span className="stat-card-num">{jobs.reduce((a, j) => a + j._count.applications, 0)}</span>
           <span className="stat-card-label">Total Applicants</span>
         </div>
       </div>
@@ -187,7 +190,7 @@ export default function RecruiterDashboard() {
         <div className="recruiter-jobs-panel">
           <h2 className="panel-title">Your Jobs</h2>
           {jobsLoading ? (
-            <div className="skeleton-list">{[1,2,3].map(i => <div key={i} className="skeleton-card" />)}</div>
+            <div className="skeleton-list">{[1, 2, 3].map(i => <div key={i} className="skeleton-card" />)}</div>
           ) : jobs.length === 0 ? (
             <div className="empty-state">
               <div className="empty-icon">📝</div>
@@ -235,7 +238,7 @@ export default function RecruiterDashboard() {
             <>
               <h2 className="panel-title">Applicants — {selectedJob?.title}</h2>
               {applicantsLoading ? (
-                <div className="skeleton-list">{[1,2,3].map(i => <div key={i} className="skeleton-card" />)}</div>
+                <div className="skeleton-list">{[1, 2, 3].map(i => <div key={i} className="skeleton-card" />)}</div>
               ) : applicants.length === 0 ? (
                 <div className="empty-state">
                   <div className="empty-icon">🕐</div>
@@ -325,7 +328,7 @@ export default function RecruiterDashboard() {
                 <div className="form-field">
                   <label>Employment Type</label>
                   <select value={jobForm.employmentType} onChange={e => setJobForm(p => ({ ...p, employmentType: e.target.value }))}>
-                    {['FULL_TIME','PART_TIME','CONTRACT','INTERNSHIP','FREELANCE'].map(t => (
+                    {['FULL_TIME', 'PART_TIME', 'CONTRACT', 'INTERNSHIP', 'FREELANCE'].map(t => (
                       <option key={t} value={t}>{t.replace('_', ' ')}</option>
                     ))}
                   </select>

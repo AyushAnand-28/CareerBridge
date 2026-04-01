@@ -22,11 +22,11 @@ interface Application {
 }
 
 const STATUS_CONFIG = {
-  APPLIED:   { label: 'Applied',    color: '#6366f1', bg: 'rgba(99,102,241,0.12)' },
-  REVIEWING: { label: 'Reviewing',  color: '#f59e0b', bg: 'rgba(245,158,11,0.12)' },
-  INTERVIEW: { label: 'Interview',  color: '#3b82f6', bg: 'rgba(59,130,246,0.12)' },
-  REJECTED:  { label: 'Rejected',   color: '#ef4444', bg: 'rgba(239,68,68,0.12)'  },
-  ACCEPTED:  { label: 'Accepted',   color: '#22c55e', bg: 'rgba(34,197,94,0.12)'  },
+  APPLIED:   { label: 'Applied',    color: 'var(--color-accent-primary)',   bg: 'rgba(245,166,35,0.12)' },
+  REVIEWING: { label: 'Reviewing',  color: 'var(--color-accent-tertiary)', bg: 'rgba(78,205,196,0.12)' },
+  INTERVIEW: { label: 'Interview',  color: '#3b82f6',                       bg: 'rgba(59,130,246,0.12)' },
+  REJECTED:  { label: 'Rejected',   color: 'var(--color-accent-secondary)', bg: 'rgba(232,59,47,0.12)'  },
+  ACCEPTED:  { label: 'Accepted',   color: '#22c55e',                       bg: 'rgba(34,197,94,0.12)'  },
 };
 
 async function fetchMyApplications(token: string): Promise<Application[]> {
@@ -76,12 +76,15 @@ export default function CandidateDashboard() {
 
   return (
     <div className="dashboard-page">
-      <div className="dashboard-header">
-        <div>
-          <h1 className="dashboard-title">My Applications</h1>
-          <p className="dashboard-subtitle">Welcome back, {user?.name || user?.email?.split('@')[0]} 👋</p>
+      <div className="dashboard-hero">
+        <div className="dashboard-header">
+          <div>
+            <div className="dashboard-badge">✏️ Candidate Hub</div>
+            <h1 className="dashboard-title">My Applications</h1>
+            <p className="dashboard-subtitle">Welcome back, {user?.name || user?.email?.split('@')[0]} 👋</p>
+          </div>
+          <a href="/jobs" className="btn btn-primary">Browse Jobs →</a>
         </div>
-        <a href="/jobs" className="btn btn-primary">Browse Jobs →</a>
       </div>
 
       {/* Stats Row */}

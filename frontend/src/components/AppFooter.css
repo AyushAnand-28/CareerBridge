@@ -1,0 +1,121 @@
+/* ─── App Footer — Creative Studio Theme ────────────────────────────────── */
+.app-footer {
+  background: var(--color-bg-secondary);
+  border-top: 2px solid rgba(245, 166, 35, 0.2);
+  position: relative;
+}
+
+/* Subtle top amber accent line */
+.app-footer::before {
+  content: '';
+  position: absolute;
+  top: -2px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 80px;
+  height: 4px;
+  background: var(--color-accent-primary);
+  border-radius: 0 0 4px 4px;
+}
+
+.app-footer-inner {
+  max-width: 1140px;
+  margin: 0 auto;
+  padding: 2.5rem 2rem;
+  display: flex;
+  gap: 3rem;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+/* Brand column */
+.app-footer-brand {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  max-width: 260px;
+}
+
+.app-footer-logo {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  text-decoration: none;
+}
+
+.app-footer-tagline {
+  font-size: 0.82rem;
+  color: var(--color-text-muted);
+  line-height: 1.7;
+  margin: 0;
+}
+
+/* Link columns */
+.app-footer-links {
+  display: flex;
+  gap: 3rem;
+  flex-wrap: wrap;
+}
+
+.app-footer-col {
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+}
+
+.app-footer-col-title {
+  font-size: 0.68rem;
+  font-weight: 700;
+  color: var(--color-accent-primary);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin: 0 0 0.3rem;
+}
+
+.app-footer-link {
+  font-size: 0.83rem;
+  color: var(--color-text-muted);
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.15s, transform 0.15s;
+  display: inline-block;
+}
+
+.app-footer-link:hover {
+  color: var(--color-accent-primary);
+  transform: translateX(3px);
+}
+
+/* Bottom copyright bar */
+.app-footer-bottom {
+  background: var(--color-bg-primary);
+  border-top: 1px solid rgba(245, 166, 35, 0.1);
+  padding: 0.9rem 2rem;
+}
+
+.app-footer-bottom-inner {
+  max-width: 1140px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-size: 0.75rem;
+  color: var(--color-text-muted);
+  opacity: 0.7;
+}
+
+.app-footer-divider {
+  opacity: 0.4;
+}
+
+@media (max-width: 640px) {
+  .app-footer-inner {
+    flex-direction: column;
+    gap: 2rem;
+    padding: 2rem 1.25rem;
+  }
+  .app-footer-links {
+    gap: 2rem;
+  }
+}
