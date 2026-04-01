@@ -61,8 +61,8 @@ app.use((err: Error, _req: Request, res: Response, _next: NextFunction) => {
 });
 
 // ─── Server ────────────────────────────────────────────────────────────────
-const server = app.listen(PORT, () => {
-    console.log(`🚀 Server running on http://localhost:${PORT}`);
+const server = app.listen(Number(PORT), '0.0.0.0', () => {
+    console.log(`🚀 Server running on http://0.0.0.0:${PORT}`);
     console.log(`   Environment : ${process.env.NODE_ENV ?? 'development'}`);
     console.log(`   CORS origin : ${allowedOrigins.join(', ')}`);
 });
