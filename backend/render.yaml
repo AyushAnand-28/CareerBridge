@@ -1,0 +1,50 @@
+# render.yaml — Declarative Render.com service definition
+# Docs: https://render.com/docs/render-yaml-spec
+#
+# How to use:
+#   1. Push this file to your GitHub repo.
+#   2. On Render: New → Blueprint → select your repo.
+#   3. Set the environment variables listed below in the Render dashboard.
+#      (Never commit secrets to this file.)
+
+services:
+  - type: web
+    name: careerbridge-api
+    runtime: node
+    region: oregon          # free tier — change to your preferred region
+    plan: free
+
+    # ── Build & Start ──────────────────────────────────────────────────────────
+    buildCommand: npm install && npx prisma generate && npm run build
+    startCommand: node dist/index.js
+
+    # ── Health Check ───────────────────────────────────────────────────────────
+    healthCheckPath: /health
+
+    # ── Auto-deploy on push ────────────────────────────────────────────────────
+    autoDeploy: true
+
+    # ── Environment Variables ─────────────────────────────────────────────────
+    # Set the actual values in the Render dashboard → Environment tab.
+    # The keys listed here act as documentation; values are intentionally blank.
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 5000
+      - key: DATABASE_URL
+        sync: false          # set manually in Render dashboard
+      - key: JWT_SECRET
+        generateValue: true  # Render auto-generates a secure random string
+      - key: JWT_EXPIRES_IN
+        value: 7d
+      - key: FRONTEND_URL
+        sync: false          # e.g. https://careerbridge.vercel.app
+      - key: CLOUDINARY_CLOUD_NAME
+        sync: false
+      - key: CLOUDINARY_API_KEY
+        sync: false
+      - key: CLOUDINARY_API_SECRET
+        sync: false
+      - key: GROQ_API_KEY
+        sync: false

@@ -5,6 +5,7 @@ coverage/
 
 # Environment variables
 .env
+.env.local
 .env.test
 
 # Prisma
@@ -15,8 +16,14 @@ coverage/
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
-logs
+logs/
 *.log
+
+# Debug / temp files (do not commit)
+check_*.ts
+temp_*.ts
+test-*.js
+*.pdf
 
 # OS
 .DS_Store
