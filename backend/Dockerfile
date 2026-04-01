@@ -6,17 +6,18 @@ FROM node:20-alpine AS builder
 
 WORKDIR /app
 
-# Install dependencies first (cached layer unless package.json changes)
+# Copy package.json AND the prisma folder first.
+# This prevents the `postinstall` script (`prisma generate`) from crashing
+# during `npm ci` because it needs `prisma/schema.prisma` to exist.
 COPY package*.json ./
+COPY prisma ./prisma
+
 RUN npm ci
 
 # Copy source and compile
 COPY tsconfig.json ./
-COPY prisma ./prisma
 COPY src ./src
 
-# Generate Prisma client then compile TypeScript
-RUN npx prisma generate
 RUN npm run build
 
 # ═══════════════════════════════════════════════════════════════════════════════
@@ -29,13 +30,14 @@ WORKDIR /app
 
 ENV NODE_ENV=production
 
-# Copy only what's needed to run
+# Again, copy package.json and prisma folder before npm ci
 COPY package*.json ./
+COPY --from=builder /app/prisma ./prisma
+
 RUN npm ci --omit=dev
 
 COPY --from=builder /app/dist ./dist
-COPY --from=builder /app/prisma ./prisma
-# Prisma client lives in node_modules — already installed above
+# Prisma client is automatically generated into node_modules during npm ci 
 
 EXPOSE 5000
 
