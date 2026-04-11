@@ -318,12 +318,14 @@ function AppInner() {
     <>
       <AppNavbar />
       <Routes>
-        {/* Public landing — accessible to everyone, no redirect for logged-in users */}
+        {/* Public landing — redirects to dashboard for logged-in users */}
         <Route
           path="/"
           element={
-            <>
-              {!user && (
+            user ? (
+              <Navigate to={user.role === 'RECRUITER' ? '/recruiter' : '/dashboard'} replace />
+            ) : (
+              <>
                 <nav className="navbar">
                   <div className="navbar-inner">
                     <div className="nav-logo">
@@ -342,10 +344,10 @@ function AppInner() {
                     </div>
                   </div>
                 </nav>
-              )}
-              <LandingPage onRegister={openRegister} />
-              {modalOpen && <AuthModal onClose={() => setModalOpen(false)} defaultTab={modalTab} />}
-            </>
+                <LandingPage onRegister={openRegister} />
+                {modalOpen && <AuthModal onClose={() => setModalOpen(false)} defaultTab={modalTab} />}
+              </>
+            )
           }
         />
 
