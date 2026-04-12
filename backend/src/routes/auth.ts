@@ -16,12 +16,14 @@ const signToken = (userId: string, role: string) => {
 
 // POST /api/auth/register
 router.post('/register', async (req: Request, res: Response): Promise<void> => {
-    const { name, email, password, role } = req.body;
+    let { name, email, password, role } = req.body;
 
     if (!email || !password) {
         res.status(400).json({ error: 'Email and password are required' });
         return;
     }
+    
+    email = email.trim().toLowerCase();
 
     if (password.length < 6) {
         res.status(400).json({ error: 'Password must be at least 6 characters' });
@@ -58,12 +60,14 @@ router.post('/register', async (req: Request, res: Response): Promise<void> => {
 
 // POST /api/auth/login
 router.post('/login', async (req: Request, res: Response): Promise<void> => {
-    const { email, password } = req.body;
+    let { email, password } = req.body;
 
     if (!email || !password) {
         res.status(400).json({ error: 'Email and password are required' });
         return;
     }
+    
+    email = email.trim().toLowerCase();
 
     try {
         const user = await prisma.user.findUnique({ where: { email } });

@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import searchIcon from '../assets/icons8-search.svg';
 import './JobsList.css';
 
 interface Job {
@@ -121,7 +122,7 @@ export default function JobsList() {
       {activeTab === 'ALL' && (
         <div className="jobs-filters">
           <div className="search-wrap">
-            <span className="search-icon">🔍</span>
+            <img src={searchIcon} alt="Search" className="search-icon" style={{ width: '16px', height: '16px' }} />
             <input
               className="search-input"
               placeholder="Search jobs, skills, company…"
@@ -154,7 +155,7 @@ export default function JobsList() {
         </div>
       ) : data?.jobs.length === 0 ? (
         <div className="empty-state">
-          <div className="empty-icon">🔍</div>
+          <img src={searchIcon} alt="Search empty state" className="empty-icon" style={{ width: '40px', height: '40px' }} />
           <p>{activeTab === 'RECOMMENDED' ? 'No recommended jobs found. Try expanding the skills on your profile.' : 'No jobs found matching your criteria.'}</p>
           {activeTab === 'ALL' && (
             <button className="btn btn-ghost" onClick={() => { setSearch(''); setDebouncedSearch(''); setEmploymentType(''); setLocation(''); }}>

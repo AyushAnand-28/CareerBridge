@@ -2,11 +2,11 @@
  * CareerBridge — Database Seed Script
  *
  * Populates the DB with realistic dummy data for UI testing:
- *   2 Recruiters + 2 Companies
- *   4 Candidates with varied skills
- *   10 Job postings (mix of OPEN, DRAFT, CLOSED)
- *   10 Applications with match scores & AI analysis text
- *   6 Saved jobs
+ *   3 Recruiters + 3 Companies
+ *   6 Candidates with varied skills
+ *   14 Job postings (mix of OPEN, DRAFT, CLOSED)
+ *   14 Applications with match scores & AI analysis text
+ *   8 Saved jobs
  *
  * Usage (from /backend directory):
  *   npx ts-node prisma/seed.ts
@@ -63,7 +63,18 @@ async function main() {
       location: 'Austin, TX',
     },
   });
-  console.log(`   ✅ ${alice.email}, ${bob.email}`);
+  const clara = await prisma.user.create({
+    data: {
+      email: 'clara@healthtech.com',
+      name: 'Clara Davies',
+      password: HASH,
+      role: 'RECRUITER',
+      bio: 'Head of Talent at HealthTech Solutions.',
+      avatarUrl: 'https://api.dicebear.com/7.x/avataaars/svg?seed=clara',
+      location: 'Boston, MA',
+    },
+  });
+  console.log(`   ✅ ${alice.email}, ${bob.email}, ${clara.email}`);
 
   // ── Companies ─────────────────────────────────────────────────────────────
   console.log('🏢 Creating companies…');
@@ -87,7 +98,17 @@ async function main() {
       recruiterId: bob.id,
     },
   });
-  console.log(`   ✅ ${nexaworks.name}, ${stacklabs.name}`);
+  const healthtech = await prisma.company.create({
+    data: {
+      name: 'HealthTech Solutions',
+      description: 'Revolutionizing patient care through modern, secure technology.',
+      logoUrl: 'https://api.dicebear.com/7.x/identicon/svg?seed=healthtech',
+      website: 'https://healthtech-solutions.com',
+      location: 'Boston, MA',
+      recruiterId: clara.id,
+    },
+  });
+  console.log(`   ✅ ${nexaworks.name}, ${stacklabs.name}, ${healthtech.name}`);
 
   // ── Candidates ────────────────────────────────────────────────────────────
   console.log('👩‍💻 Creating candidates…');
@@ -143,7 +164,33 @@ async function main() {
       resumeUrl: 'https://example.com/liam-resume.pdf',
     },
   });
-  console.log(`   ✅ ${priya.name}, ${james.name}, ${sara.name}, ${liam.name}`);
+  const mark = await prisma.user.create({
+    data: {
+      email: 'mark.ios@gmail.com',
+      name: 'Mark Taylor',
+      password: HASH,
+      role: 'CANDIDATE',
+      bio: 'iOS Developer creating clean, fluid native experiences using Swift and SwiftUI.',
+      avatarUrl: 'https://api.dicebear.com/7.x/avataaars/svg?seed=mark',
+      location: 'Chicago, IL',
+      skills: ['Swift', 'SwiftUI', 'Objective-C', 'CoreData', 'XCTest'],
+      resumeUrl: 'https://example.com/mark-resume.pdf',
+    },
+  });
+  const sophia = await prisma.user.create({
+    data: {
+      email: 'sophia.design@yahoo.com',
+      name: 'Sophia Martinez',
+      password: HASH,
+      role: 'CANDIDATE',
+      bio: 'Product Designer specialising in SaaS applications and complex UI flows.',
+      avatarUrl: 'https://api.dicebear.com/7.x/avataaars/svg?seed=sophia',
+      location: 'Toronto, Canada',
+      skills: ['Figma', 'UI/UX', 'Wireframing', 'Prototyping', 'CSS'],
+      resumeUrl: 'https://example.com/sophia-resume.pdf',
+    },
+  });
+  console.log(`   ✅ ${priya.name}, ${james.name}, ${sara.name}, ${liam.name}, ${mark.name}, ${sophia.name}`);
 
   // ── Job Postings ──────────────────────────────────────────────────────────
   console.log('📋 Creating job postings…');
@@ -270,7 +317,56 @@ async function main() {
     createdAt: daysAgo(45),
   }});
 
-  console.log('   ✅ 10 jobs created (7 OPEN, 1 DRAFT, 1 CONTRACT, 1 CLOSED)');
+  // HealthTech jobs
+  const iosHealth = await prisma.jobPosting.create({ data: {
+    title: 'iOS Engineer — Patient App',
+    description: 'Lead the development of our flagship patient-facing iOS app built entirely in SwiftUI. Focus on security, performance, and accessibility.',
+    techStack: ['Swift', 'SwiftUI', 'XCTest', 'GraphQL'],
+    employmentType: EmploymentType.FULL_TIME,
+    location: 'Boston, MA (Hybrid)',
+    salaryMin: 130_000, salaryMax: 165_000,
+    status: JobStatus.OPEN,
+    recruiterId: clara.id, companyId: healthtech.id,
+    createdAt: daysAgo(4),
+  }});
+
+  const designerHealth = await prisma.jobPosting.create({ data: {
+    title: 'Senior Product Designer',
+    description: 'Design intuitive and accessible interfaces for healthcare professionals. Strong prototyping skills required.',
+    techStack: ['Figma', 'Prototyping', 'UI/UX', 'Accessibility'],
+    employmentType: EmploymentType.FULL_TIME,
+    location: 'New York, NY',
+    salaryMin: 110_000, salaryMax: 140_000,
+    status: JobStatus.OPEN,
+    recruiterId: clara.id, companyId: healthtech.id,
+    createdAt: daysAgo(12),
+  }});
+
+  const dataHealth = await prisma.jobPosting.create({ data: {
+    title: 'Data Scientist — Predictive Analytics',
+    description: 'Work with vast amounts of health data to improve our predictive models.',
+    techStack: ['Python', 'SQL', 'PyTorch', 'AWS', 'Pandas'],
+    employmentType: EmploymentType.FULL_TIME,
+    location: 'Remote (US)',
+    salaryMin: 120_000, salaryMax: 155_000,
+    status: JobStatus.OPEN,
+    recruiterId: clara.id, companyId: healthtech.id,
+    createdAt: daysAgo(8),
+  }});
+
+  const supportHealth = await prisma.jobPosting.create({ data: {
+    title: 'Technical Support Specialist',
+    description: 'Provide level 2 technical support for our clinic-facing software.',
+    techStack: ['SQL', 'Jira', 'Zendesk'],
+    employmentType: EmploymentType.FULL_TIME,
+    location: 'Remote',
+    salaryMin: 65_000, salaryMax: 85_000,
+    status: JobStatus.CLOSED,
+    recruiterId: clara.id, companyId: healthtech.id,
+    createdAt: daysAgo(30),
+  }});
+
+  console.log('   ✅ 14 jobs created (11 OPEN, 1 DRAFT, 1 CONTRACT, 2 CLOSED)');
 
   // ── Applications ──────────────────────────────────────────────────────────
   console.log('📨 Creating applications…');
@@ -379,7 +475,51 @@ async function main() {
     createdAt: daysAgo(11),
   }});
 
-  console.log('   ✅ 10 applications created');
+  // Mark -> HealthTech iOS
+  await prisma.application.create({ data: {
+    candidateId: mark.id, jobId: iosHealth.id,
+    resumeUrl: mark.resumeUrl!,
+    coverLetter: 'I have significant experience building medical applications using SwiftUI and HealthKit.',
+    matchScore: 89,
+    aiAnalysis: 'Excellent match — candidate exhibits core SwiftUI and Swift expertise and has prior healthcare sector context.',
+    status: ApplicationStatus.INTERVIEW,
+    createdAt: daysAgo(2),
+  }});
+
+  // Sophia -> HealthTech Designer
+  await prisma.application.create({ data: {
+    candidateId: sophia.id, jobId: designerHealth.id,
+    resumeUrl: sophia.resumeUrl!,
+    coverLetter: 'My portfolio includes complex dashboard redesigns prioritizing accessibility, matching this role perfectly.',
+    matchScore: 94,
+    aiAnalysis: 'Outstanding match — candidate proves high proficiency in Figma, prototyping, and accessibility principles directly aligned with healthcare product needs.',
+    status: ApplicationStatus.REVIEWING,
+    createdAt: daysAgo(5),
+  }});
+
+  // Sara -> HealthTech Designer (she's a dev, just checking what happens)
+  await prisma.application.create({ data: {
+    candidateId: sara.id, jobId: designerHealth.id,
+    resumeUrl: sara.resumeUrl!,
+    coverLetter: 'I have a strong eye for design alongside my frontend Next.js skills.',
+    matchScore: 41,
+    aiAnalysis: 'Poor match — candidate is a frontend engineer, not a dedicated product designer. While Figma is listed, they lack pure UI/UX depth required for a senior design position.',
+    status: ApplicationStatus.REJECTED,
+    createdAt: daysAgo(6),
+  }});
+
+  // Sophia -> NexaWorks Design Systems Engineer
+  await prisma.application.create({ data: {
+    candidateId: sophia.id, jobId: draftNexa.id,
+    resumeUrl: sophia.resumeUrl!,
+    coverLetter: 'I specialize in UI/UX and Figma, making me a great fit to orchestrate your design systems from the ground up.',
+    matchScore: 78,
+    aiAnalysis: 'Solid match on the design end. Figma and CSS skills are present, but lacks React or full Storybook engineering capability. A strong design partner if paired with an engineer.',
+    status: ApplicationStatus.APPLIED,
+    createdAt: daysAgo(1),
+  }});
+
+  console.log('   ✅ 14 applications created');
 
   // ── Saved Jobs ────────────────────────────────────────────────────────────
   console.log('🔖 Creating saved jobs…');
@@ -390,21 +530,26 @@ async function main() {
     prisma.savedJob.create({ data: { candidateId: sara.id,  jobId: aiRole.id } }),
     prisma.savedJob.create({ data: { candidateId: liam.id,  jobId: goRole.id } }),
     prisma.savedJob.create({ data: { candidateId: james.id, jobId: aiRole.id } }),
+    prisma.savedJob.create({ data: { candidateId: mark.id, jobId: snrFE.id } }),
+    prisma.savedJob.create({ data: { candidateId: sophia.id, jobId: iosHealth.id } }),
   ]);
-  console.log('   ✅ 6 saved jobs');
+  console.log('   ✅ 8 saved jobs');
 
   // ── Summary ───────────────────────────────────────────────────────────────
   console.log('\n' + '─'.repeat(40));
   console.log('✅  Seed complete! All accounts → password: seed1234\n');
   console.log('Recruiters:');
   console.log('  alice@nexaworks.io   → NexaWorks dashboard');
-  console.log('  bob@stacklabs.dev    → StackLabs dashboard\n');
+  console.log('  bob@stacklabs.dev    → StackLabs dashboard');
+  console.log('  clara@healthtech.com → HealthTech Solutions dashboard\n');
   console.log('Candidates:');
   console.log('  priya.sharma@gmail.com  (React/TS  — Interview, Reviewing, Rejected)');
   console.log('  james.o@outlook.com     (Go/BE     — Accepted, Applied, Reviewing)');
   console.log('  sara.lee@proton.me      (Next.js   — Interview, Rejected)');
   console.log('  liam.patel@gmail.com    (DevOps    — Interview, Rejected)');
-  console.log('\nJobs: 10 total | Applications: 10 | Saved Jobs: 6\n');
+  console.log('  mark.ios@gmail.com      (iOS/Swift — Interview)');
+  console.log('  sophia.design@yahoo.com (Design    — Reviewing, Applied)');
+  console.log('\nJobs: 14 total | Applications: 14 | Saved Jobs: 8\n');
 }
 
 main()
