@@ -5,6 +5,8 @@ import { toast } from 'react-toastify';
 import { useAuth } from '../context/AuthContext';
 import './JobDetail.css';
 
+const API_BASE = import.meta.env.VITE_API_URL ?? '';
+
 interface Job {
   id: string;
   title: string;
@@ -41,7 +43,7 @@ export default function JobDetail() {
   const { data, isLoading, isError } = useQuery<{ job: Job }>({
     queryKey: ['job', id],
     queryFn: async () => {
-      const res = await fetch(`/api/jobs/${id}`);
+      const res = await fetch(`${API_BASE}/api/jobs/${id}`);
       if (!res.ok) throw new Error('Job not found');
       return res.json();
     },
@@ -51,7 +53,7 @@ export default function JobDetail() {
   const { data: myAppsData } = useQuery<{ applications: { jobId: string; status: string }[] }>({
     queryKey: ['my-applications'],
     queryFn: async () => {
-      const res = await fetch('/api/applications/me', { headers: { Authorization: `Bearer ${token}` } });
+      const res = await fetch(`${API_BASE}/api/applications/me`, { headers: { Authorization: `Bearer ${token}` } });
       if (!res.ok) return { applications: [] };
       return res.json();
     },
@@ -67,7 +69,7 @@ export default function JobDetail() {
       if (resumeFile) formData.append('resume', resumeFile);
       if (coverLetter) formData.append('coverLetter', coverLetter);
 
-      const res = await fetch(`/api/applications/${id}`, {
+      const res = await fetch(`${API_BASE}/api/applications/${id}`, {
         method: 'POST',
         headers: { Authorization: `Bearer ${token}` },
         body: formData,

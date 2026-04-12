@@ -4,6 +4,8 @@ import { toast } from 'react-toastify';
 import { useAuth } from '../context/AuthContext';
 import './ProfileSettings.css';
 
+const API_BASE = import.meta.env.VITE_API_URL ?? '';
+
 interface Profile {
   id: string;
   name: string | null;
@@ -36,7 +38,7 @@ export default function ProfileSettings() {
   const { data, isLoading } = useQuery<{ user: Profile }>({
     queryKey: ['profile'],
     queryFn: async () => {
-      const res = await fetch('/api/profile/me', { headers: { Authorization: `Bearer ${token}` } });
+      const res = await fetch(`${API_BASE}/api/profile/me`, { headers: { Authorization: `Bearer ${token}` } });
       if (!res.ok) throw new Error('Failed to load profile');
       return res.json();
     },
@@ -66,7 +68,7 @@ export default function ProfileSettings() {
 
   const updateProfile = useMutation({
     mutationFn: async () => {
-      const res = await fetch('/api/profile/me', {
+      const res = await fetch(`${API_BASE}/api/profile/me`, {
         method: 'PUT',
         headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
         body: JSON.stringify(form),
@@ -87,7 +89,7 @@ export default function ProfileSettings() {
       if (!avatarFile) throw new Error('No file selected');
       const fd = new FormData();
       fd.append('avatar', avatarFile);
-      const res = await fetch('/api/profile/avatar', {
+      const res = await fetch(`${API_BASE}/api/profile/avatar`, {
         method: 'POST',
         headers: { Authorization: `Bearer ${token}` },
         body: fd,
@@ -107,7 +109,7 @@ export default function ProfileSettings() {
 
   const updateCompany = useMutation({
     mutationFn: async () => {
-      const res = await fetch('/api/profile/company', {
+      const res = await fetch(`${API_BASE}/api/profile/company`, {
         method: 'POST',
         headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
         body: JSON.stringify(companyForm),

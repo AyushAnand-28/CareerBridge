@@ -5,6 +5,8 @@ import { useAuth } from '../context/AuthContext';
 import searchIcon from '../assets/icons8-search.svg';
 import './JobsList.css';
 
+const API_BASE = import.meta.env.VITE_API_URL ?? '';
+
 interface Job {
   id: string;
   title: string;
@@ -30,7 +32,7 @@ const EMPLOYMENT_TYPES = ['FULL_TIME', 'PART_TIME', 'CONTRACT', 'INTERNSHIP', 'F
 
 async function fetchJobs(params: Record<string, string>): Promise<JobsResponse> {
   const query = new URLSearchParams(params).toString();
-  const res = await fetch(`/api/jobs?${query}`);
+  const res = await fetch(`${API_BASE}/api/jobs?${query}`);
   if (!res.ok) throw new Error('Failed to fetch jobs');
   return res.json();
 }
@@ -71,7 +73,7 @@ export default function JobsList() {
     queryKey: activeTab === 'ALL' ? ['jobs', params] : ['recommended-jobs'],
     queryFn: async () => {
       if (activeTab === 'ALL') return fetchJobs(params);
-      const res = await fetch('/api/jobs/recommended', { headers: { Authorization: `Bearer ${token}` } });
+      const res = await fetch(`${API_BASE}/api/jobs/recommended`, { headers: { Authorization: `Bearer ${token}` } });
       if (!res.ok) throw new Error('Failed to fetch recommended jobs');
       return res.json() as Promise<JobsResponse>;
     },

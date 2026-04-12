@@ -4,6 +4,8 @@ import { toast } from 'react-toastify';
 import { useAuth } from '../context/AuthContext';
 import './Dashboard.css';
 
+const API_BASE = import.meta.env.VITE_API_URL ?? '';
+
 interface Application {
   id: string;
   status: 'APPLIED' | 'REVIEWING' | 'INTERVIEW' | 'REJECTED' | 'ACCEPTED';
@@ -30,7 +32,7 @@ const STATUS_CONFIG = {
 };
 
 async function fetchMyApplications(token: string): Promise<Application[]> {
-  const res = await fetch('/api/applications/me', {
+  const res = await fetch(`${API_BASE}/api/applications/me`, {
     headers: { Authorization: `Bearer ${token}` },
   });
   if (!res.ok) throw new Error('Failed to load applications');
@@ -51,7 +53,7 @@ export default function CandidateDashboard() {
 
   const withdrawMutation = useMutation({
     mutationFn: async (id: string) => {
-      const res = await fetch(`/api/applications/${id}`, {
+      const res = await fetch(`${API_BASE}/api/applications/${id}`, {
         method: 'DELETE',
         headers: { Authorization: `Bearer ${token}` },
       });

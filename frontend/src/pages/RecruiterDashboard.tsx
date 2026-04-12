@@ -44,8 +44,10 @@ const JOB_STATUS_COLORS: Record<string, { color: string; bg: string }> = {
 
 const APP_STATUS_ORDER = ['APPLIED', 'REVIEWING', 'INTERVIEW', 'REJECTED', 'ACCEPTED'] as const;
 
+const API_BASE = import.meta.env.VITE_API_URL ?? '';
+
 async function apiRequest(url: string, method: string, token: string, body?: unknown) {
-  const res = await fetch(url, {
+  const res = await fetch(`${API_BASE}${url}`, {
     method,
     headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
     ...(body ? { body: JSON.stringify(body) } : {}),
