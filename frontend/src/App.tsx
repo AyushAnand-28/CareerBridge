@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { BrowserRouter, Routes, Route, Navigate, Link, useLocation, useNavigate } from 'react-router-dom';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import AuthGuard from './components/AuthGuard';
@@ -13,6 +13,21 @@ import './App.css';
 
 // ─── Landing Page (inlined, was the original App content) ──────────────────
 function LandingPage({ onRegister }: { onRegister: () => void }) {
+  useEffect(() => {
+    const observerOptions = { root: null, rootMargin: '0px', threshold: 0.1 };
+    const observer = new IntersectionObserver((entries, obs) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('active');
+          obs.unobserve(entry.target);
+        }
+      });
+    }, observerOptions);
+    const elements = document.querySelectorAll('.reveal');
+    elements.forEach(el => observer.observe(el));
+    return () => observer.disconnect();
+  }, []);
+
   return (
     <div className="app">
       <div className="sketch-bg" aria-hidden="true">
@@ -88,7 +103,7 @@ function LandingPage({ onRegister }: { onRegister: () => void }) {
       </section>
 
       <section className="trust-strip">
-        <div className="trust-inner">
+        <div className="trust-inner reveal">
           <p className="trust-label">Trusted by teams at</p>
           <div className="trust-logos">
             {['Google', 'Stripe', 'Notion', 'Vercel', 'Linear', 'Figma', 'Airbnb'].map(co => (
@@ -99,7 +114,7 @@ function LandingPage({ onRegister }: { onRegister: () => void }) {
       </section>
 
       <section className="features" id="features">
-        <div className="features-container">
+        <div className="features-container reveal">
           <div className="section-tag">Why CareerBridge</div>
           <h2 className="features-title">Everything you need to <span className="gradient-text">land the role</span></h2>
           <div className="features-grid">
@@ -135,7 +150,7 @@ function LandingPage({ onRegister }: { onRegister: () => void }) {
 
       {/* ── How It Works ── */}
       <section className="how-it-works" id="how-it-works">
-        <div className="how-container">
+        <div className="how-container reveal">
           <div className="section-tag">Simple Process</div>
           <h2 className="hiw-title">Get hired in <span className="gradient-text">3 easy steps</span></h2>
           <div className="steps-grid">
@@ -160,7 +175,7 @@ function LandingPage({ onRegister }: { onRegister: () => void }) {
 
       {/* ── Browse by Category ── */}
       <section className="features" id="categories" style={{ background: 'var(--color-bg-secondary)' }}>
-        <div className="features-container">
+        <div className="features-container reveal">
           <div className="section-tag">Explore Roles</div>
           <h2 className="features-title">Browse by <span className="gradient-text">category</span></h2>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))', gap: '3px', background: 'rgba(245,166,35,0.12)', border: '2px solid rgba(245,166,35,0.2)', borderRadius: '10px', overflow: 'hidden', marginTop: '1rem' }}>
@@ -186,7 +201,7 @@ function LandingPage({ onRegister }: { onRegister: () => void }) {
 
       {/* ── Testimonials ── */}
       <section className="testimonials" id="testimonials">
-        <div className="testimonials-container">
+        <div className="testimonials-container reveal">
           <div className="section-tag">Success Stories</div>
           <h2 className="testimonials-title">Loved by <span className="gradient-text">thousands</span></h2>
           <div className="testimonials-grid">
@@ -229,7 +244,7 @@ function LandingPage({ onRegister }: { onRegister: () => void }) {
 
       <section className="cta">
         <div className="cta-container">
-          <div className="cta-inner">
+          <div className="cta-inner reveal">
             <div className="section-tag">Get Started Today</div>
             <h2 className="cta-title">Your next chapter is<br /><span className="gradient-text">one click away</span></h2>
             <div className="cta-buttons">
